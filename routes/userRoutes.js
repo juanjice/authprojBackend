@@ -2,6 +2,9 @@ const router = require("express").Router();
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const securePin = require("secure-pin");
+const emailinfo=require('../gmailSend/nodeSend');
+const nodemailer = require('nodemailer');
 
 const auth = require("../middleware/auth");
 const { findByIdAndDelete } = require("../models/userModel");
@@ -105,5 +108,27 @@ res.json({
   adminUser:user.adminUser
 });
 });
+
+router.post("/sendemail",async(req,res)=>{
+  //mailOptions.to="angypumi@unisabana.edu.co"
+  emailinfo.mailOptions.to="angypuasdmi@unisabana.edu.co"
+  console.log(emailinfo.mailOptions)
+  emailinfo.transporter.sendMail(
+    emailinfo.mailOptions,
+    function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      } 
+    }  
+
+  )
+
+  
+  securePin.generatePin(6, (pin)=> {
+    console.log("Pin: " + pin);
+})
+})
 
 module.exports = router;
